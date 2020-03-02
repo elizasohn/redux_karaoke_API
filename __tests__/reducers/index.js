@@ -14,6 +14,17 @@ describe('Karaoke App', () => {
       expect(lyricChangeReducer(initialState.songsById, { type: null })).toEqual(initialState.songsById);
     });
 
+    it('Should update state when API lyrics are being requested.', () => {
+      const action = actions.requestSong('crocodile rock');
+      const newStateEntry = {
+        isFetching: true,
+        title: action.title,
+        songId: action.songId,
+      };
+      expect(lyricChangeReducer(initialState.songsById, action)[action.songId])
+      .toEqual(newStateEntry);
+    });
+
     it('Should update currently-displayed lyric of song', () => {
       expect(lyricChangeReducer(initialState.songsById, { type: 'NEXT_LYRIC', currentSongId: 2 })[2].arrayPosition).toEqual(initialState.songsById[2].arrayPosition + 1);
     });
@@ -51,7 +62,7 @@ describe('Karaoke App', () => {
   it('Should restart song', () => {
     expect(lyricChangeReducer(initialState.songsById, actions.restartSong(1))[1].arrayPosition).toEqual(0);
   });
-  
+
   it('Should change selectedSong.', () => {
     expect(songChangeReducer(initialState.currentSongId, actions.changeSong(2))).toEqual(2);
   });
